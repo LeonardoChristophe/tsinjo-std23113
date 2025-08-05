@@ -17,6 +17,4 @@ public class Beneficiary {
 
     private String fullName;
     private String email;
-
-    // Constructeurs, getters, setters générés par Lombok
 }

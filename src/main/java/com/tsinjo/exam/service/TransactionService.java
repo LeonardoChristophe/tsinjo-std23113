@@ -12,9 +12,9 @@ import java.util.List;
 public class TransactionService {
 
 
+    public void createDonation(Donor donor, Payment payment) {
 
-
-
+    }
 
     @Service
     public class TransactionService {
