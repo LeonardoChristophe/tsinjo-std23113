@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tsinjo - Fonds d'urgence HEI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Tsinjo</h1>
+
+    <!-- Formulaire de don -->
+    <div class="card mb-5">
+        <div class="card-body">
+            <h5 class="card-title">Faire un don</h5>
+            <form th:action="@{/donate}" th:object="${newDonation}" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Nom complet</label>
+                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Montant (Ar)</label>
+                            <input type="number" class="form-control" id="amount" th:field="*{amount}" min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">Moyen de paiement</label>
+                            <select class="form-select" id="paymentMethod" th:field="*{paymentMethod}" required>
+                                <option value="Orange Money">Orange Money</option>
+                                <option value="MVola">MVola</option>
+                                <option value="Airtel Money">Airtel Money</option>
+                                <option value="Visa">Visa</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Donner !</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Historique -->
+    <h2 class="mb-3">Historique</h2>
+    <div th:each="item : ${history}">
+        <!-- Dons -->
+        <div th:if="${item instanceof T(com.hei.tsinjo.domain.Donation)}" class="card mb-3 border-success">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    + <span th:text="${#numbers.formatDecimal(item.payment.amount, 1, 2, 'COMMA')}"></span> Ar
+                </h5>
+                <p class="card-text">
+                    <span th:text="${item.payment.status == 'VERIFYING' ? 'en vérification' : 'confirmé'}"></span>,
+                    <span th:text="${item.payment.paymentMethod}"></span>.<br>
+                    <span th:text="${#temporals.format(item.payment.date, 'dd/MM/yyyy')}"></span>. Par
+                    <span th:text="${item.donor.fullName}"></span>
+                    (<span th:text="${item.donor.email}"></span>).
+                </p>
+            </div>
+        </div>
+
+        <!-- Aides -->
+        <div th:if="${item instanceof T(com.hei.tsinjo.domain.Help)}" class="card mb-3 border-danger">
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    - <span th:text="${#numbers.formatDecimal(item.payment.amount, 1, 2, 'COMMA')}"></span> Ar
+                </h5>
+                <p class="card-text">
+                    Pour <span th:text="${item.beneficiary.fullName}"></span>
+                    (<span th:text="${item.beneficiary.email}"></span>).<br>
+                    <span th:text="${item.accidentDescription}"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
